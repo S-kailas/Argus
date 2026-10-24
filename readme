@@ -22,3 +22,6 @@ homelab-bot/
 └── scripts
     └── homelab-apt-update
 
+apt.py checks the system for updates using "apt-get update", which is implemented using "sudo -n"
+Therefore edit visudo 
+user ALL=(root) NOPASSWD: /usr/bin/apt-get update
