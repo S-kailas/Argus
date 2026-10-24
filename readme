@@ -1,3 +1,24 @@
 Argus is a Server maintainance Discord Bot 
 
-config.py - Threshold of CPU,Memory and Update check interval 
+
+homelab-bot/
+│
+├── main.py
+├── config.py
+├── example.env
+│
+├── cogs (Discord Commands)
+│   ├── system.py (/processes,/status,/uptime,/ping,/help)
+│   └── updates.py (/update)
+│
+├── monitoring
+│   ├── resources.py (psutils-Collects CPU, RAM, swap, disk usage, uptime data)
+│   └── alerts.py (checks configured thresholds, sends Discord alerts)
+│
+├── services
+│   ├── apt.py (checks available package updates, retrieves package details, requests installation)
+│   └── systemd.py ()
+│
+└── scripts
+    └── homelab-apt-update
+
