@@ -5,7 +5,8 @@ import discord
 from discord.ext import commands
 
 from config import DISCORD_TOKEN, OWNER_ID, ALERT_CHANNEL_ID
-from cogs.system import SystemCog
+from cogs.system import SystemCog #system cogs
+from cogs.updates import UpdatesCog #update cogs
 from monitoring.alerts import ResourceAlertMonitor
 
 logging.basicConfig(
@@ -24,11 +25,12 @@ class HomeLabBot(commands.Bot):
         self.resource_monitor = ResourceAlertMonitor(self)
 
     async def setup_hook(self):
-        await self.add_cog(SystemCog(self))
+        await self.add_cog(SystemCog(self)) #system cogs
+        await self.add_cog(UpdatesCog(self)) #update cog
         self.resource_monitor.start()
         synced = await self.tree.sync()
         log.info("Synced %d application commands.", len(synced))
-
+        
     async def on_ready(self):
         log.info("Logged in as %s (ID: %s)", self.user, self.user.id if self.user else "?")
 
