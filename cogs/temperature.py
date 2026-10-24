@@ -8,15 +8,18 @@ from discord.ext import commands, tasks
 
 from monitoring.temperature import get_temperatures, get_cpu_temperature
 
+#Import env variables from config 
+from config import (
+    TEMP_WARNING_C,
+    TEMP_CRITICAL_C,
+    TEMP_CHECK_INTERVAL_SECONDS,
+    TEMP_ALERT_COOLDOWN_SECONDS,
+)
 
-WARNING_C = float(os.getenv("TEMP_WARNING_C", "80"))
-CRITICAL_C = float(os.getenv("TEMP_CRITICAL_C", "90"))
-CHECK_INTERVAL = int(
-    os.getenv("TEMP_CHECK_INTERVAL_SECONDS", "60")
-)
-ALERT_COOLDOWN = int(
-    os.getenv("TEMP_ALERT_COOLDOWN_SECONDS", "900")
-)
+WARNING_C = TEMP_WARNING_C
+CRITICAL_C = TEMP_CRITICAL_C
+CHECK_INTERVAL = TEMP_CHECK_INTERVAL_SECONDS
+ALERT_COOLDOWN = TEMP_ALERT_COOLDOWN_SECONDS
 
 # In-memory alert state. It resets when the bot restarts.
 previous_level = "normal"
@@ -72,7 +75,7 @@ class TemperatureCog(commands.Cog):
             ephemeral=True,
         )
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=CHECK_INTERVAL)
     async def temperature_monitor(self):
         global previous_level, last_alert_time
 

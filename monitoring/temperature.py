@@ -36,3 +36,17 @@ def get_temperatures():
 
     return readings
 
+
+def get_cpu_temperature() -> float | None:
+    """Return package temperature, falling back to the hottest core."""
+    readings = get_temperatures()
+
+    if "Package id 0" in readings:
+        return readings["Package id 0"]
+
+    core_temps = [
+        temp for label, temp in readings.items()
+        if label.startswith("Core ")
+    ]
+
+    return max(core_temps) if core_temps else None
