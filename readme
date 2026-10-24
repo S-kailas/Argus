@@ -1,6 +1,11 @@
 Argus is a Server maintainance Discord Bot 
 
-
+/update    - checks for system updates
+/uptime    - shows the current uptime 
+/ping      - latency  
+/status    - general system info
+/processes - Lists the processes according to CPU/Memory load 
+	
 homelab-bot/
 │
 ├── main.py
