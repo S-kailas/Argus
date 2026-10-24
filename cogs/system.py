@@ -79,6 +79,8 @@ class SystemCog(commands.Cog):
             "`/status` — CPU, RAM, swap, disk, load and uptime\n"
             "`/processes` — top processes by CPU or memory\n"
             "`/uptime` — server uptime\n"
+            "`/updates` — Checks for available updates\n"
+            "`/temperature` — System temperature\n"
             "`/help` — this command"
         )
         await interaction.response.send_message(text, ephemeral=True)

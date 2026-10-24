@@ -1,11 +1,11 @@
 Argus is a Server maintainance Discord Bot 
 
-/update    - checks for system updates
-/uptime    - shows the current uptime 
-/ping      - latency  
-/status    - general system info
-/processes - Lists the processes according to CPU/Memory load 
-	
+/update       - checks for system updates
+/uptime       - shows the current uptime 
+/ping         - latency  
+/status       - general system info
+/processes    - Lists the processes according to CPU/Memory load 
+/temperature  - Shows the system temperature
 homelab-bot/
 │
 ├── main.py
@@ -22,10 +22,10 @@ homelab-bot/
 │
 ├── services
 │   ├── apt.py (checks available package updates, retrieves package details, requests installation)
-│   └── systemd.py ()
+│   └── systemd.py ()//not integrated 
 │
 └── scripts
-    └── homelab-apt-update
+    └── homelab-apt-update//not integrated
 
 apt.py checks the system for updates using "apt-get update", which is implemented using "sudo -n"
 Therefore edit visudo 
