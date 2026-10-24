@@ -7,6 +7,7 @@ from discord.ext import commands
 from config import DISCORD_TOKEN, OWNER_ID, ALERT_CHANNEL_ID
 from cogs.system import SystemCog #system cogs
 from cogs.updates import UpdatesCog #update cogs
+from cogs.temperature import TemperatureCog #temp cogs
 from monitoring.alerts import ResourceAlertMonitor
 
 logging.basicConfig(
@@ -27,6 +28,7 @@ class HomeLabBot(commands.Bot):
     async def setup_hook(self):
         await self.add_cog(SystemCog(self)) #system cogs
         await self.add_cog(UpdatesCog(self)) #update cog
+        await self.add_cog(TemperatureCog(self))#temp cog
         self.resource_monitor.start()
         synced = await self.tree.sync()
         log.info("Synced %d application commands.", len(synced))
