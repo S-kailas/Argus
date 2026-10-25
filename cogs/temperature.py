@@ -1,4 +1,4 @@
-
+#/temparature is defined here
 import os
 import time
 
@@ -8,7 +8,7 @@ from discord.ext import commands, tasks
 
 from monitoring.temperature import get_temperatures, get_cpu_temperature
 
-#Import env variables from config 
+#Importing env variables from config 
 from config import (
     TEMP_WARNING_C,
     TEMP_CRITICAL_C,
@@ -21,7 +21,6 @@ CRITICAL_C = TEMP_CRITICAL_C
 CHECK_INTERVAL = TEMP_CHECK_INTERVAL_SECONDS
 ALERT_COOLDOWN = TEMP_ALERT_COOLDOWN_SECONDS
 
-# In-memory alert state. It resets when the bot restarts.
 previous_level = "normal"
 last_alert_time = 0.0
 

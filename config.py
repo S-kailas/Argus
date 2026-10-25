@@ -13,7 +13,6 @@ OWNER_ID = int(OWNER_ID_RAW)
 
 ALERT_CHANNEL_ID = int(ALERT_CHANNEL_ID_RAW) if ALERT_CHANNEL_ID_RAW.isdigit() else None
 
-# Resource alert thresholds. Adjust these to suit your server.
 CPU_ALERT_PERCENT = float(os.getenv("CPU_ALERT_PERCENT", "90"))
 RAM_ALERT_PERCENT = float(os.getenv("RAM_ALERT_PERCENT", "90"))
 SWAP_ALERT_PERCENT = float(os.getenv("SWAP_ALERT_PERCENT", "80"))
