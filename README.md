@@ -2,6 +2,7 @@
 
 Argus is a Server Maintenance Discord Bot.
 
+it is Highly recommended to run the prgram as a separate user with less permissions 
 ![Argus Architecture](documentation/architecture.png)
 
 ## Commands
