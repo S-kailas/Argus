@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands
 
-from config import DISCORD_TOKEN, OWNER_ID, ALERT_CHANNEL_ID
+from config import DISCORD_TOKEN, ALERT_CHANNEL_ID
 from cogs.system import SystemCog #system cogs
 from cogs.updates import UpdatesCog #update cogs
 from cogs.temperature import TemperatureCog #temp cogs
@@ -21,7 +21,6 @@ class HomeLabBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         super().__init__(command_prefix="!", intents=intents)
-        self.owner_id = OWNER_ID
         self.alert_channel_id = ALERT_CHANNEL_ID
         self.resource_monitor = ResourceAlertMonitor(self)
 
