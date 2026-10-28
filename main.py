@@ -43,13 +43,7 @@ class HomeLabBot(commands.Bot):
 
 bot = HomeLabBot()
 
-#ping
-@bot.tree.command(name="ping", description="Check whether the HomeLab bot is responsive.")
-async def ping(interaction: discord.Interaction):
-    if interaction.user.id != OWNER_ID:
-        await interaction.response.send_message("You are not authorized to use this bot.", ephemeral=True)
-        return
-    await interaction.response.send_message(f"Ping! Gateway latency: {bot.latency * 1000:.0f} ms")
+#ping function removed from main
 
 
 if __name__ == "__main__":
