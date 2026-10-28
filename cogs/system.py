@@ -78,9 +78,12 @@ class SystemCog(commands.Cog):
     @app_commands.command(name="ping",description="Checks latency and availability to the server.")
     @owner_only()
     
-    async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(f"Ping! Gateway latency: {bot.latency * 1000:.0f} ms")
-
+    async def ping(self, interaction: discord.Interaction):
+        latency_ms = self.bot.latency * 1000
+        await interaction.response.send_message(
+            f"Pong! Gateway latency: {latency_ms:.0f} ms",
+            ephemeral=True,
+        )
 
     #help
     @app_commands.command(name="help", description="List available HomeLab bot commands.")
