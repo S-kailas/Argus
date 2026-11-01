@@ -15,6 +15,13 @@ it is Highly recommended to run the program as a separate user with less permiss
 | `/status` | Shows general system information |
 | `/processes` | Lists processes according to CPU/Memory load |
 | `/temperature` | Shows the system temperature |
+| `/containers` | List all docker containers and their states |
+| `/docker` | Show docker daemon and container summary |
+| `/container_info {parameter}` | show details for one container |
+| `/docker_stats` | Shows live resource usage of runnign containers |
+
+
+
 
 ## APT Update Service
 
