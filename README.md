@@ -26,9 +26,9 @@ Therefore, edit `visudo`:
 user ALL=(root) NOPASSWD: /usr/bin/apt-get update
 ```
 
-# Setting Up a Safe Docker Environment for Container Monitoring
+## Setting Up a Safe Docker Environment for Container Monitoring
 
-## Deploy a Read-Only Docker Socket Proxy
+### Deploy a Read-Only Docker Socket Proxy
 
 `compose.yaml` configuration to set up the read-only Docker socket proxy
 
@@ -49,9 +49,9 @@ services:
     restart: unless-stopped
 ```
 
-## Change the Client Daemon Endpoint for Restricted User
+### Change the Client Daemon Endpoint for Restricted User
 
-Inside your `~/.bashrc` or `~/.profile` file, add the following line:
+Inside your `~/.bashrc` or `~/.profile` file add:
 
 ```bash
 export DOCKER_HOST="tcp://127.0.0.1:2375"
