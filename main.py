@@ -9,6 +9,7 @@ from cogs.system import SystemCog #system cogs
 from cogs.updates import UpdatesCog #update cogs
 from cogs.temperature import TemperatureCog #temp cogs
 from monitoring.alerts import ResourceAlertMonitor
+from cogs.docker import DockerCog #docker cogs
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,6 +29,7 @@ class HomeLabBot(commands.Bot):
         await self.add_cog(SystemCog(self)) #system cogs
         await self.add_cog(UpdatesCog(self)) #update cog
         await self.add_cog(TemperatureCog(self))#temp cog
+        await self.add_cog(DockerCog(self)) #docker cogs
         self.resource_monitor.start()
         synced = await self.tree.sync()
         log.info("Synced %d application commands.", len(synced))
