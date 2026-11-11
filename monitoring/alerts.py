@@ -25,7 +25,7 @@ from monitoring.temperature import get_cpu_temperature
 
 log = logging.getLogger(__name__)
 
-//Resource
+#Resource
 class ResourceAlertMonitor:
     def __init__(self, bot):
         self.bot = bot
@@ -79,7 +79,7 @@ class ResourceAlertMonitor:
                     )
         except Exception:
             log.exception("Resource monitoring check failed")
-//Temperature
+#Temperature
 class TemperatureAlertMonitor:
     def __init__(self, bot):
         self.bot = bot
