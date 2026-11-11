@@ -8,7 +8,7 @@ from config import DISCORD_TOKEN, ALERT_CHANNEL_ID
 from cogs.system import SystemCog #system cogs
 from cogs.updates import UpdatesCog #update cogs
 from cogs.temperature import TemperatureCog #temp cogs
-from monitoring.alerts import ResourceAlertMonitor
+from monitoring.alerts import (ResourceAlertMonitor, TemperatureAlertMonitor,) #alerts
 from cogs.docker import DockerCog #docker cogs
 
 logging.basicConfig(
@@ -24,13 +24,16 @@ class HomeLabBot(commands.Bot):
         super().__init__(command_prefix="!", intents=intents)
         self.alert_channel_id = ALERT_CHANNEL_ID
         self.resource_monitor = ResourceAlertMonitor(self)
+        self.temperature_monitor = TemperatureAlertMonitor(self)
 
     async def setup_hook(self):
         await self.add_cog(SystemCog(self)) #system cogs
         await self.add_cog(UpdatesCog(self)) #update cog
         await self.add_cog(TemperatureCog(self))#temp cog
         await self.add_cog(DockerCog(self)) #docker cogs
+        #alerts
         self.resource_monitor.start()
+        self.temperature_monitor.start()
         synced = await self.tree.sync()
         log.info("Synced %d application commands.", len(synced))
         
@@ -39,6 +42,7 @@ class HomeLabBot(commands.Bot):
 
     async def close(self):
         self.resource_monitor.stop()
+        self.temperature_monitor.stop()
         await super().close()
 
 
