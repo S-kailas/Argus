@@ -12,8 +12,6 @@ from monitoring.temperature import get_temperatures, get_cpu_temperature
 from config import (
     TEMP_WARNING_C,
     TEMP_CRITICAL_C,
-    TEMP_CHECK_INTERVAL_SECONDS,
-    TEMP_ALERT_COOLDOWN_SECONDS,
 )
 
 WARNING_C = TEMP_WARNING_C
@@ -73,66 +71,6 @@ class TemperatureCog(commands.Cog):
             "\n".join(lines),
             ephemeral=True,
         )
-
-    @tasks.loop(seconds=CHECK_INTERVAL)
-    async def temperature_monitor(self):
-        global previous_level, last_alert_time
-
-        temp = get_cpu_temperature()
-        if temp is None:
-            return
-
-        level = temperature_level(temp)
-        now = time.monotonic()
-
-        if level == "normal":
-            if previous_level != "normal":
-                await self.send_alert(
-                    f" **CPU temperature recovered:** {temp:.1f}°C"
-                )
-            previous_level = "normal"
-            last_alert_time = 0.0
-            return
-
-        # Alert on a level change, or repeat after the cooldown.
-        level_changed = level != previous_level
-        cooldown_elapsed = now - last_alert_time >= ALERT_COOLDOWN
-
-        if level_changed or cooldown_elapsed:
-            emoji = "" if level == "critical" else ""
-            await self.send_alert(
-                f"{emoji} **CPU temperature {level.upper()}: "
-                f"{temp:.1f}°C**\n"
-                f"Warning: {WARNING_C:.0f}°C | "
-                f"Critical: {CRITICAL_C:.0f}°C"
-            )
-            last_alert_time = now
-
-        previous_level = level
-
-    @temperature_monitor.before_loop
-    async def before_temperature_monitor(self):
-        await self.bot.wait_until_ready()
-
-    async def send_alert(self, message: str):
-        if not self.alert_channel_id:
-            return
-
-        channel = self.bot.get_channel(self.alert_channel_id)
-        if channel is None:
-            try:
-                channel = await self.bot.fetch_channel(
-                    self.alert_channel_id
-                )
-            except (discord.HTTPException, discord.Forbidden):
-                return
-
-        if hasattr(channel, "send"):
-            try:
-                await channel.send(message)
-            except (discord.HTTPException, discord.Forbidden):
-                pass
-
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(TemperatureCog(bot))

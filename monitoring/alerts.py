@@ -6,6 +6,7 @@ import discord
 from discord.ext import tasks
 
 from config import (
+    #resource-alert config
     CPU_ALERT_PERCENT,
     RAM_ALERT_PERCENT,
     SWAP_ALERT_PERCENT,
@@ -13,12 +14,18 @@ from config import (
     RESOURCE_CHECK_INTERVAL_SECONDS,
     ALERT_COOLDOWN_SECONDS,
     ALERT_CHANNEL_ID,
+    #temperature-alert config
+    TEMP_WARNING_C,
+    TEMP_CRITICAL_C,
+    TEMP_CHECK_INTERVAL_SECONDS,
+    TEMP_ALERT_COOLDOWN_SECONDS,
 )
 from monitoring.resources import get_snapshot
+from monitoring.temperature import get_cpu_temperature
 
 log = logging.getLogger(__name__)
 
-
+//Resource
 class ResourceAlertMonitor:
     def __init__(self, bot):
         self.bot = bot
@@ -67,8 +74,83 @@ class ResourceAlertMonitor:
                 elif key in self.active_alerts:
                     self.active_alerts.remove(key)
                     await channel.send(
-                        f"✅ **HomeLab recovery: {label} is back below its threshold** "
+                        f"**HomeLab recovery: {label} is back below its threshold** "
                         f"(currently {value:.1f}{unit}; threshold {threshold:.1f}{unit})."
                     )
         except Exception:
             log.exception("Resource monitoring check failed")
+//Temperature
+class TemperatureAlertMonitor:
+    def __init__(self, bot):
+        self.bot = bot
+        self.previous_level = "normal"
+        self.last_alert_time = 0.0
+
+        self.loop = tasks.loop(
+            seconds=max(10, TEMP_CHECK_INTERVAL_SECONDS)
+        )(self._check)
+
+    def start(self):
+        if not self.loop.is_running():
+            self.loop.start()
+
+    def stop(self):
+        if self.loop.is_running():
+            self.loop.cancel()
+
+    def temperature_level(self, temp: float) -> str:
+        if temp >= TEMP_CRITICAL_C:
+            return "critical"
+
+        if temp >= TEMP_WARNING_C:
+            return "warning"
+
+        return "normal"
+
+    async def _check(self):
+        if not ALERT_CHANNEL_ID:
+            return
+
+        try:
+            temp = await asyncio.to_thread(get_cpu_temperature)
+
+            if temp is None:
+                return
+
+            level = self.temperature_level(temp)
+            now = time.monotonic()
+
+            channel = await get_alert_channel(self.bot)
+            if channel is None:
+                return
+
+            if level == "normal":
+                if self.previous_level != "normal":
+                    await channel.send(
+                        f"**CPU temperature recovered:** {temp:.1f}°C"
+                    )
+
+                self.previous_level = "normal"
+                self.last_alert_time = 0.0
+                return
+
+            level_changed = level != self.previous_level
+            cooldown_elapsed = (
+                now - self.last_alert_time >= TEMP_ALERT_COOLDOWN_SECONDS
+            )
+
+            if level_changed or cooldown_elapsed:
+                await channel.send(
+                    f"**CPU temperature {level.upper()}: "
+                    f"{temp:.1f}°C**\n"
+                    f"Warning: {TEMP_WARNING_C:.0f}°C | "
+                    f"Critical: {TEMP_CRITICAL_C:.0f}°C"
+                )
+
+                self.last_alert_time = now
+
+            self.previous_level = level
+
+        except Exception:
+            log.exception("Temperature monitoring check failed")
+
