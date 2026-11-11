@@ -120,9 +120,9 @@ class TemperatureAlertMonitor:
             level = self.temperature_level(temp)
             now = time.monotonic()
 
-            channel = await get_alert_channel(self.bot)
+            channel = self.bot.get_channel(ALERT_CHANNEL_ID)
             if channel is None:
-                return
+                channel = await self.bot.fetch_channel(ALERT_CHANNEL_ID)
 
             if level == "normal":
                 if self.previous_level != "normal":
