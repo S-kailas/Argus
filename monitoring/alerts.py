@@ -20,10 +20,41 @@ from config import (
     TEMP_CHECK_INTERVAL_SECONDS,
     TEMP_ALERT_COOLDOWN_SECONDS,
 )
-from monitoring.resources import get_snapshot
+from monitoring.resources import get_snapshot, get_top_processes
 from monitoring.temperature import get_cpu_temperature
 
 log = logging.getLogger(__name__)
+
+#fetching top 2 Process(cpu)
+async def get_top_cpu_processes_text() -> str:
+    """Return the top two CPU-consuming processes."""
+
+    try:
+        processes = await asyncio.to_thread(
+            get_top_processes, "cpu", 2
+        )
+
+        if not processes:
+            return "\nTop CPU-consuming processes: unavailable."
+
+        lines = []
+
+        for process in processes:
+            name = process["name"].replace("`", "'")[:25]
+
+            lines.append(
+                f"`{process['pid']}` **{name}** — "
+                f"CPU: `{process['cpu_percent']:.1f}%`"
+            )
+
+        return (
+            "\n\n**Top CPU-consuming processes:**\n"
+            + "\n".join(lines)
+        )
+
+    except Exception:
+        log.exception("Failed to collect top CPU processes")
+        return "\nTop CPU-consuming processes: unavailable."
 
 #Resource
 class ResourceAlertMonitor:
@@ -57,6 +88,8 @@ class ResourceAlertMonitor:
                 channel = await self.bot.fetch_channel(ALERT_CHANNEL_ID)
 
             now = time.monotonic()
+            process_details = None
+
             for label, (value, threshold, unit) in checks.items():
                 key = label.lower()
                 if value >= threshold:
@@ -66,9 +99,13 @@ class ResourceAlertMonitor:
                     )
                     self.active_alerts.add(key)
                     if should_send:
+                        if process_details is None:
+                             process_details = (await get_top_cpu_processes_text())
+
                         await channel.send(
                             f"⚠️ **HomeLab alert: {label} is high**\n"
                             f"Current: **{value:.1f}{unit}** · Threshold: **{threshold:.1f}{unit}**"
+                            f"{process_details}"
                         )
                         self.last_sent[key] = now
                 elif key in self.active_alerts:
@@ -140,11 +177,14 @@ class TemperatureAlertMonitor:
             )
 
             if level_changed or cooldown_elapsed:
+                process_details = await get_top_cpu_processes_text()
+
                 await channel.send(
                     f"**CPU temperature {level.upper()}: "
                     f"{temp:.1f}°C**\n"
                     f"Warning: {TEMP_WARNING_C:.0f}°C | "
                     f"Critical: {TEMP_CRITICAL_C:.0f}°C"
+                    f"{process_details}"
                 )
 
                 self.last_alert_time = now
