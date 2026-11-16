@@ -2,6 +2,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+from cogs.system import owner_only
 
 from monitoring.temperature import get_temperatures, get_cpu_temperature
 
@@ -13,6 +14,7 @@ class TemperatureCog(commands.Cog):
         name="temperature",
         description="Show current CPU temperature readings"
     )
+    @owner_only()
     async def temperature(self, interaction: discord.Interaction):
         readings = get_temperatures()
 
