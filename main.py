@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from config import DISCORD_TOKEN, ALERT_CHANNEL_ID
 from cogs.system import SystemCog #system cogs
-from cogs.updates import UpdatesCog #update cogs
+#from cogs.updates import UpdatesCog #update cogs
 from cogs.temperature import TemperatureCog #temp cogs
 from monitoring.alerts import (ResourceAlertMonitor, TemperatureAlertMonitor,) #alerts
 from cogs.docker import DockerCog #docker cogs
@@ -28,8 +28,8 @@ class HomeLabBot(commands.Bot):
 
     async def setup_hook(self):
         await self.add_cog(SystemCog(self)) #system cogs
-        await self.add_cog(UpdatesCog(self)) #update cog
-        await self.add_cog(TemperatureCog(self))#temp cog
+        #await self.add_cog(UpdatesCog(self)) #update cog
+        await self.add_cog(TemperatureCog(self)) #temp cog
         await self.add_cog(DockerCog(self)) #docker cogs
         #alerts
         self.resource_monitor.start()
