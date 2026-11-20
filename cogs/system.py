@@ -6,7 +6,7 @@ from discord.ext import commands
 from config import OWNER_ID
 from monitoring.resources import get_snapshot, get_top_processes, format_bytes
 
-def owner_only():#Discord Owner is verification 
+def owner_only():#Discord Owner verification 
     async def predicate(interaction: discord.Interaction) -> bool:
         if interaction.user.id == OWNER_ID:
             return True
@@ -92,12 +92,16 @@ class SystemCog(commands.Cog):
     async def help_command(self, interaction: discord.Interaction):
         text = (
             "**HomeLab bot commands**\n"
-            "`/ping` — check bot responsiveness\n"
+            "`/ping` — checks latency\n"
             "`/status` — CPU, RAM, swap, disk, load and uptime\n"
             "`/processes` — top processes by CPU or memory\n"
             "`/uptime` — server uptime\n"
-            "`/updates` — Checks for available updates\n"
+            #"`/updates` — Checks for available updates\n"
             "`/temperature` — System temperature\n"
+            "`/docker` — Shows docker daemon and container summary\n"
+            "`/docker_stats` — Shows live resource usage of running containers\n"
+            "`/containers` — List all docker containers and their status\n"
+            "`/container_info {container-name}` — Shows details for one container\n"
             "`/help` — this command"
         )
         await interaction.response.send_message(text, ephemeral=True)
