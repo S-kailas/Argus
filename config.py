@@ -29,5 +29,5 @@ TEMP_ALERT_COOLDOWN_SECONDS = int(os.getenv("TEMP_ALERT_COOLDOWN_SECONDS", "900"
 DISK_PATH = os.getenv("DISK_PATH", "/")
 
 #docker
-DOCKER_HOST = os.getenv("DOCKER_HOST").strip()
-DOCKER_CLI_TIMEOUT = int(os.getenv("DOCKER_CLI_TIMEOUT"))
+DOCKER_HOST = os.getenv("DOCKER_HOST", "").strip()
+DOCKER_CLI_TIMEOUT = int(os.getenv("DOCKER_CLI_TIMEOUT", "15"))
