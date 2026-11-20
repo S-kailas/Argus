@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands
 
-from config import DISCORD_TOKEN, ALERT_CHANNEL_ID
+from config import DISCORD_TOKEN, ALERT_CHANNEL_ID, DOCKER_HOST
 from cogs.system import SystemCog #system cogs
 #from cogs.updates import UpdatesCog #update cogs
 from cogs.temperature import TemperatureCog #temp cogs
@@ -30,7 +30,8 @@ class HomeLabBot(commands.Bot):
         await self.add_cog(SystemCog(self)) #system cogs
         #await self.add_cog(UpdatesCog(self)) #update cog
         await self.add_cog(TemperatureCog(self)) #temp cog
-        await self.add_cog(DockerCog(self)) #docker cogs
+        if DOCKER_HOST:
+            await self.add_cog(DockerCog(self)) #docker cogs
         #alerts
         self.resource_monitor.start()
         self.temperature_monitor.start()
